@@ -1,0 +1,3 @@
+[submodule "practicals/tensorflow-workshop"]
+	path = practicals/tensorflow-workshop
+	url = https://github.com/random-forests/tensorflow-workshop.git
