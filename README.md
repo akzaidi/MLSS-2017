@@ -1,7 +1,6 @@
 # MLSS-2017 - Tübingen, June 19th - 30th
 
-![](http://mlss.tuebingen.mpg.de/2017/pics/Max-Planck-Gesellschaft.png)
-![](http://mlss.tuebingen.mpg.de/2017/pics/MLSS17_small.png)
+<img src="http://mlss.tuebingen.mpg.de/2017/pics/Max-Planck-Gesellschaft.png" width="300"> <img src="http://mlss.tuebingen.mpg.de/2017/pics/MLSS17_small.png" width="500">
 
 This repository contains my notes from the machine learning summer school in Tübingen.
 
