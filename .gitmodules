@@ -1,3 +1,6 @@
 [submodule "practicals/tensorflow-workshop"]
 	path = practicals/tensorflow-workshop
 	url = https://github.com/random-forests/tensorflow-workshop.git
+[submodule "practicals/practicals/sna"]
+	path = practicals/practicals/sna
+	url = https://github.com/Networks-Learning/MLSS-2017.git
