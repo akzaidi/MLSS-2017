@@ -127,7 +127,7 @@
 $C_1(d+\log(1/\delta))m^{uc}_H(\epsilon,\delta) < \epsilon^2 <C_2(d+\log(1/\delta))/m^{uc}_H(\epsilon,\delta)$,
 or roughly $d/m$, where $d$ is sample-size and $m$ is VC-dimension, or edges. 
 
-So if edges is order of magnitude the same or larger than training size, $\epsilon$ will be >=1, no guarantees.
+So if edges is order of magnitude the same or larger than training size, $\epsilon$ will be $\ge1$, no guarantees.
 
 Hence, for guarantees need sample sizes with training examples that are order of magnitude larger than edges. This is worst-case theory. 
 
@@ -139,13 +139,16 @@ Hence, for guarantees need sample sizes with training examples that are order of
 	- ERM's computational complexity in many cases is NP hard.
 
 #### Relaxing the notion of learnability -- non-uniform learnability
-
 + A class $H$ is non-uniformly learnable if there is a function $m_H: H_x(0,1)^2 \to \mathbb{N}$ and a learning algorithm $A$, such that for every distribution $P$ over $X\times Y$ and every $\epsilon,\delta>0$, for every $h$ in $H$ for samples S of size $m>m_H(h,\epsilon,\delta)$ generated i.i.d. by $P$, 
 $$
 Pr[L_P(A(S))>L_p(H)+\epsilon]<\delta
 $$
 - no longer uniform in $m_H$, different number of necessary samples depending on the $h$.
 
++ If $H$ shatters an infinite set, then it is not even non-uniform learnable
+	- in particular, the class of ALL functiosn over any finite domain is not non-uniform learnable.
+	- it shatters $\mathbb{N}$
++ 
 
 ## Bernard Scholkpof - Causality
 
