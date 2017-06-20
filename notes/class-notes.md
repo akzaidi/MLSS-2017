@@ -148,7 +148,6 @@ $$
 + If $H$ shatters an infinite set, then it is not even non-uniform learnable
 	- in particular, the class of ALL functiosn over any finite domain is not non-uniform learnable.
 	- it shatters $\mathbb{N}$
-+ 
 
 ## Bernard Scholkpof - Causality
 
