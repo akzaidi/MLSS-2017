@@ -440,6 +440,103 @@ $$
 - fixed component at $w=0$ encourage to be very large (large $pi_0$)
 
 
+## Ruslan Salakhutdinov - Deep Learning
+
+### Supervised (Discriminative) Learning
+
++ ERM: 
+
+$$
+\arg \min_\theta\frac1T\sum_T \ell (f(x^{(t)}; \theta)y^{(t)} + \lambda \Omega(\theta))
+$$
+
+### Stochastic Gradient Descent
+
++ Perform updates after seeing each example:
+	- initialize $\theta \equiv {W^{(1)}, b^{(1)}, \ldots, W^{(L+1)}, b^{(L+1)}}$
+	- 
++ Momentum: exponential average of previous gradients.
+
+
+### Learning Distributed Representations
+
++ deep learning: learning modules with multilayer representations
+	- multilayer (feed-forwad) neural networks
+	- multilayer graphical model (deep belief net, deep Boltzmann machine)
++ each layer learns distrbuted representation
+	- units in a layer are nto mutualaly exclusive
+		* each unit is a separate feature of a the input
+		* two units can be active at the same time
+	- units do not correspond to 
+
+### Best Practice
+
++ Given a dataset $\mathcal{D}$, pick a model that overfits it entirely
+	- gets 0 training error
++ Regularize the model, e.g., using dropout
++ SGD with momentum, batch-normalization, and dropout usually works very well
+	- hard to beat
+
+### Dropout
+
++ Cripple neural network by removing hidden units **stochastically**
+	- each hidden unit is set to 0 with probably 1/2
+	- prevents hidden units from co-adapting
+	- hidden units must be more generally useful
+		* at any point in time, any given can be shutdown
+		* forces the model to learn redundancies, or features that can discriminate particular classes especially well
+
++ At test time, replace the masks by their expectations
+	- this is simply the constant vector 0.5 if dropout probability is 0.5
+	- For single hidden layer, equivalent to taking the geometric average of all nueral networks, with all possible binary masks
+
+### Residual Networks
+
++ really hard to train deep networks
+	- worse error on both training and test sets compared to shallower nets!
+- key idea: use skip-steps, introduce pass through into each layer
+	- thus, only residual needs to be learned
++ 
+
+<br><br>
+
+<br><br>
+
+
+<br><br>
+
+<br><br>
+
+<br><br>
+
+<br><br>
+
+
+<br><br>
+
+<br><br>
+
+
+<br><br>
+
+<br><br>
+
+<br><br>
+
+<br><br>
+
+
+<br><br>
+
+<br><br>
+
+
+<br><br>
+
+<br><br>
+
+
+
 <br><br>
 
 <br><br>
@@ -486,7 +583,5 @@ $$
 
 <br><br>
 
-
-<br><br>
 
 <br><br>
