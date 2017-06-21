@@ -494,9 +494,148 @@ $$
 
 + really hard to train deep networks
 	- worse error on both training and test sets compared to shallower nets!
-- key idea: use skip-steps, introduce pass through into each layer
+- key idea: use skip-connections, introduce pass through into each layer
 	- thus, only residual needs to be learned
-+ 
+
+
+## Zoubin Ghahramani - Probabilistic Machine Learning: Foundations and Frontiers
+
+### Neural Networks as a Probabilistic Model
+
++ Neural networks are tunable nonlinear functions with many parameters
++ Parameters $\theta$ are weights of a neural network
++ Neural networks model $p(y^{(n)} | x^{(n)},\theta)$ as a nonlinear function of $\theta$ and $x$.
++ Multilayer neural networks model the moverall function as  composition of functions (layers)
++ Usually trained to miximize likleihood (or penalized likelihood) using variants of stochastic gradient descent optimization
+
+**what's a neural network**: nonlinear functions + basic stats + basic optimization
+
+### Revolution in Neural Networks
+
+1. Algorithmic and architectural innovations - (many layers, ReLUs, dropout, LSTMs)
+2. vastly larger data sets (web-scale)
+3. vastly larger-scale compute resources (GPU, cloud)
+4. much better software tools (autodifferentiation)
+5. vastly increased industry investment and media hype
+
+### Issues
+
++ poor at representing uncertainy
++ easily fooled by adversarial examples
++ finicky to optimize: non-convex + choice of architecture, learning procedure, initialization, etc., require expert knowledge and experimentation
++ uninterpretable black-boxes, lacking in transperancy, making them difficult to trust
+
+### Beyond Deep Learning - Toolboxes versus Modeling
+
++ Machine learning as a tooolbox of methods for processing data: feed data into one of many methods, choose methods that have good theoretical or empirical performance, make predictions and decision
++ Machine learning as a science of learning models from data: define a space of possible models, learn the parameters and structure of the models from data, make predictions and decision
++ A model describes data that one could observe from a system
++ If we use the mathematics of probability theory to express all forms of uncertainy and noise associated with our model...
++ ... then inverse probability (i.e., Bayes rule) allows us to infer unknown quantities, adapt our models, make predictions and learn from data.
+
+### Bayesian Machine Learning
+
+**Learning**: 
+$$
+P(\theta|\mathcal{D},m)=\frac{P(\mathcal{D}|\theta,m)P(\theta|m)}{P(\mathcal{D}|m)}
+$$
+
+**Prediction**:
+
+$$p(x|D,m) = \int P(x|\theta,D,m)P(\theta,d,m)$$
+
+**Model comparison**:
+
+$$
+P(m|D) = \frac{P(D|m)P(m)}{P(D)}
+$$
+
+Why care about Bayesian learning
+
++ we want calibrated model and prediction uncertainty: getting systems that know when they don't know
++ Automatic model complexity control and structure learning (Bayesian Occam's Razor)
+
+### Algorithms vs Models
+
++ Some algorithms target finding a parameter optimum, $\theta^\star$
++ other algorithms target inferring the posterior $p(\theta|D)$
++ often these are not so different
++ Bayesian methods are **algorithms**
+
+### Bayesian Deep Learning
+
++ Laplace approximations (MacKay, 1992)
++ Variational approximations (Hinton and van Camp, 1993, Graves 2011)
++ MCMC (Neal, 1993)
++ SGLD (Welling and Teh, 2011)
++ Probabilistic back-rop (Hernandez-Lobato, et. al 2015, 2016)
++ Dropout as model averaging (Gal and Ghahramani, 2015, 2016)
+
+#### When Uncertainty Helps
+
++ Extrapolation time - being able to average over many models can be exceptionally fruitful
+
+### When is the probabilistic approach essential?
+
++ Learnign and intelligence depend crucially on the caterful probabilistic representation of uncertainty
+	1. forecasting
+	2. decision making
+		- evaluating decisions in a stochastic world
+	3. learning from limited, noisy, and missing data
+		- non-imagenet examples
+		- medical examples with limited datasets
+		- not-okay to get things right on-average
+	4. learning complex personalized models
+	5. data compression
+		- every lossless compression algorithm, is implicitly/explicitly representing a probabilistic model/approximation
+	6. automatic modeling, discovery, and experiment design
+
+
+
+
+
+<br><br>
+
+<br><br>
+
+
+<br><br>
+
+<br><br>
+
+<br><br>
+
+<br><br>
+
+<br><br>
+
+
+<br><br>
+
+<br><br>
+
+
+<br><br>
+
+<br><br>
+
+<br><br>
+
+<br><br>
+
+<br><br>
+
+<br><br>
+
+
+<br><br>
+
+<br><br>
+
+<br><br>
+
+<br><br>
+
 
 <br><br>
 
