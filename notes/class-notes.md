@@ -349,7 +349,7 @@ $$
 
 #### Deepify Operator
 
-+ Sam Roweis: "Much better to invent an operator, than a new model. Model: 1 paper, Operator: long string of operators"
++ Sam Roweis: "Much better to invent an operator, than a new model. Model: 1 paper, Operator: long string of papers"
 + "Deepify operator" - pick a graphical model with conditional distributions and replace those with a deep neural network
 + Logits: deep NN
 + Deep survival analysis: replace Cox's proportional hazard function with a deep network
@@ -365,7 +365,80 @@ $$
 #### Wake-Sleep Algorithm
 
 + Stochastic variational Bayesian inference
-+ 
+
+
+#### Reducing the variance: reparameteriztion trick
+
++ want to reduce variance of gradients
++ Taking noise, and write variable as a deterministic function of parents and some standard normal error
+
+
+### Discriminative vs Generative
+
+#### Generative
+
+1. Inject expert knowledge
+	- impose prior constraints
+	- great for low data regimes
+2. Interpretable
+3. Domain transfer robust
+
+
+#### Discriminative
+
+1. Solves the problem you care about
+	- solves the map you care about
+	- rather than a different map that you must invert
+2. Highly successful accurate
+3. Less need to impose prior constraints, needs lots of data for estimating
+
+### Deep Convolutional Networks
+
++ really good for signal processing
+	- looks at low-signal data
++ CNNs:
+	- local filters
+	- weight sharing
+	- more global, abstract and invariant representations in deeper layers
++ three applications of transfer learning for medical examples to super-human-performance
+	- dermatology (thrun et. al)
+	- breast cancer detection
+	- retina lesions
++ disadvantages:
+	1. way too big
+	2. consume too much energy
+	3. use too much memory
+
+### Bayesian Deep Learning
+
++ Automatic model selection / pruning
++ Automatic regularization
++ Realistic prediction uncertainty (important for decision making)
+
+### Variational Bayes
+
++ One integral for every dataset
+
+
+### Sparsifying and Compressing CNNs
+
++ Owed to Geoffrey Hinton's old papers
++ DNNs are vastly overparameterized (e.g., distillation, Bucilua et. al 2006)
++ simple idea, learn a soft weight sharing prior (Nowlan & Hinton 1991, Gong et al 2014)
++ intepret variational bound as coding cost for data (minimum description length)
++ use a mixture gaussian prior
+	- train weights
+
+#### Empirical Bayes
+
++ Fit mixture of gaussians prior to the distribution of weights
+
+$$
+p(w) = \prod^I _{i=1} \sum^J _{j=0} \pi_j \mathcal{N}(w_i | \mu_j, \sigma_j ^2) 
+$$
+
+- fixed component at $w=0$ encourage to be very large (large $pi_0$)
+
 
 <br><br>
 
