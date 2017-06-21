@@ -1,6 +1,6 @@
-# MLSS 
+# MLSS 2017 Lecture Notes 
 
-## Scholkpof - What is ML?
+## Bernard Schölkopf - What is ML?
 
 + Leibniz - thought experiments about understanding laws for data
 + what does it mean to generalize
@@ -12,7 +12,7 @@
 + 1940s, Cybernetics Norbert Wiener, Cynernetics or control and communication in the animal and the machine
 	* study of control and information processing rather than energy processing in machines and animals
 + macy conferences 1946-1953
-+ project cybersyn at allende government (chile, 1971 - 1973) https://en.wikipedia.org/wiki/Project_Cybersyn
++ [project cybersyn at allende government (chile, 1971 - 1973)](https://en.wikipedia.org/wiki/Project_Cybersyn)
 + mcculloch-pittts, formal neurons can emulate universal turing machines
 + hebbs - formal neurons
 + rosenblatt - the perceptron, a probabilistic model for information storage
@@ -61,7 +61,7 @@
 
 + key ingredients
 + data distribution D
-+ f: x -> y
++ $f: x \to y$
 + minimize probability of $p_h(H(x) \ne f(x))$
 + natural measure: empirical error of h $\#S = |i: h(x_i) \ne f(x_i)|$
 + pigeon superstition (Skinner 1948)
@@ -107,13 +107,13 @@
 + a class H shatters a domain subset A if for every susbet B of A there is some $h_B$ in H so that for all x in A $h_B(x)=1$ if and only fi x is in B. 
 + VC dimension:
 	* largest set such that H shatters A
-	* $VC_dim_H = \sup{|A|: H shatters A}$
+	* $VC_{dim_H} = \sup{|A|: H shatters A}$
 + The fundamental theorem: the following statemetns are equivalent
 	1. H has the uniform convergence property
 	2. ERM is an agonstic PAC learner for H
 	3. H is agnostic PAC learnable 
 	4. H is PAC learnable
-	5. VCdim(H) is finite
+	5. $VC_{dim_H}$ is finite
 
 ### Part III
 
@@ -149,7 +149,14 @@ $$
 	- in particular, the class of ALL functiosn over any finite domain is not non-uniform learnable.
 	- it shatters $\mathbb{N}$
 
-## Bernard Scholkpof - Causality
+### Three Missing Topics
+
+1. Safety - our ERM results relied on statistical guarantees. Some use-cases can not tolerate $\epsilon$ errors. Here we can'
+2. Fairness - examining predictions based on past data.
+3. Interpretability - understanding an interpreting model results.
+
+
+## Bernard Schölkopf - Causality
 
 + Storks delivers our babies
 + Reichenbach - Common cause principle
@@ -168,6 +175,245 @@ $$
 + $X_i := f_i(PA_i,U_i)$ with indepdent RV $U_1,\ldots,U_n$, where U stands for unexplained random variabels
 	* also called a nonlinear structural equation model 
 
-### Counterfactuals
+## D. Janzing - Causality
 
-+ david hume - 
++ Causal structure formalized by DAG $G$ with random variables $X_1,\ldots,X_n$ as nodes
++ Causal markov condition states that the density $p(x_1,\ldots, x_n)$ then factorizes into 
+
+$$
+p(x_1,\ldots, x_n) = \prod^n_j=p(x_j| pa_j)
+$$
+
++ Pearl's do-notation, distribution of $Y$ given that $X$ is set to $x$:
+	- $p(Y|do \, X = x)$ or $p(Y|do \, x)$
+
++ Computing $p(X_1,\ldots,X_n|do \, x_i)$ from $p(X_1,\ldots,X_n)$ and $G$
+	- start with causal factorization
+	- replace conditionals for intervention variables by Kronecker delta
+		* i.e., replace $p(X_i|PA_i)$ with $\delta_{X_i,x_i}$
+
+### Inferring the DAG
+
++ Key postulate: causal markov condition
++ Essential concept: d-separation
++ Describing conditional independencies using paths and blocks along paths
+	- d-separation provides the descriptive notion of conditional independence
++ Berkson's paradox (1946): independence variables, but correlated through confounding
++ (Reichenbach 1956): asymmetry under inverting arrows
+
+## Ben Schölkopf - Causality Part II
+
+## Max Welling - Marrying Graphical Models & Deep Learning
+
++ Main actor of today's story:
+
+$$
+\mathbb{E}_{Q(V)}[\log P(X|V)] - KL[Q(V)||P(V)]
+$$
+
++ $P(V)$ is complexity penalty
+
+### ML as Computational Statistics
+
++ There are perspectives from statistics that you cannot get from an optimization perspective
++ Maximize log-likelihood
+
+$$
+\max_\Theta \log P(X_1,\ldots,X_n|\Theta)
+$$
+
+for unsupervised.
+
+For supervised:
+
+$$
+\max_\Theta \log P(Y_1,\ldots,Y_n|X_1,\ldots,X_n|\Theta)
+$$
+
+and minimization of loss:
+
+$$
+\min_\Theta \sum_i Loss(Y_i,\hat{Y}(X_i,\Theta))
+$$
+
+### Bias-Variance Decomposition
+
++ Examining $Y=f(x)+\epsilon$, where $\epsilon \sim \mathcal{N}(0,\sigma_\epsilon)$
++ $Err(x)=\mathbb{E}[(Y-\hat f(x))^2]$
++ $Err(x)=(\mathbb{E}[\hat{f}(x)]-f(x))^2 + \mathbb{E}[(\hat(f)(x)-\mathbb{E}[\hat(f)(x)])^2] + \sigma_\epsilon ^2$
++ First term is variance, second is bias, third is irreducible error
+
+## Graphical Models
+
++ Concisely represent conditional independence relations between variables
++ One-to-one correspondence between the dependencies implied by the graph and the probabilistic model
++ Can do calculations just by marginalizing out the graph
+
+
+### Bayes Ball Algorithm
+
++ mechanically/mechnanistically if variables are marginally independent
++ An undirected path is active if a Bayes ball traveligna long it never encounters the "stop" symbol
++ If there are no active paths from $X$ to $Y$ when ${Z_1,\ldots,Z_k}$ are shared, then $X\perp Y$.
+
+### Markov Random Fields
+
++ Probability distribution as maximal clique: 
+
+$$
+P(X) = \frac{\prod_c\Phi_c(X_c)}{Z}
+$$
+
+### Latent Variable Models
+
++ Introduction latent (unobserved) variables (perhaps confounders, if taking a causal perspective) will dramatically increase the capacity of the model:
+$$
+P(X) = \sum_Z P(X|Z)P(Z)
+$$
++ Fundamental degrees of freedom of what you're trying to model
++ Problem: $P(Z|X)$ is intractable for most nontrivial models
+	- for learning/inference, you need $P(Z|X)$ (unobserved nodes given observed nodes), so this can be tricky
+
+### Mainstream Ways of Handling Intractable Inference
+
+#### Variational Inference
+
++ Want to estimate some complex probability distribution $p$
++ Restrict yourself to a family of simple distributions $Q$
++ **Advantages**:
+	- deterministic
+	- easy to assess convergence
++ **Disadvantages**:
+	- biased
+		* Never get actual $P$, since you're biased
+	- Local minima
+
+#### Sampling - MCMC
+
++ **Advantages**:
+	- Unbiased
+
++ **Disadvantages**:
+	+ Stochastic (sample error)
+		- suffering from variance, not bias this time
+	+ hard to mix between modes
+	+ Hard to assess convergence
+
+#### Independence Samplers and MCMC
+
++ Genearting independent samples: sample from $g$ and suppress samples with low $p(\theta | X)$, e.g., rejection sampling, or importance sampling
+	- does not scale to high dimensions
+	- too much variance
++ MCMC
+	- make steps by perturbing previous sample
+	- probability of visiting a state is equal to $P(\theta | X)$
++ Sampling 101: Metropolis-Hastings
+	- propose new step with Gaussian movements
+	- satisfies detailed balance: is probability flow in either transition balanced
+	- is it easy to come back to the current state?
+	- is the new state more probable
+	- Burn-in is unnecessarily slow
+	+ This algorithm is $\mathcal{O}(N)$
+
+#### Variational Inference
+
++ Choose tractable family of distributions
++ Minimize $Q: KL[Q(Z|X)||P(Z||X)]$
++ Equivalent to maximize of $\Phi$:
+
+$$
+\sum_Z Q(Z|X,\Phi)(\log P(X|Z,\Theta)|P(Z) - \log(Q(Z|X,\Phi)))
+$$
+
++ in learning, maximize the probability of observed data given parameters
++ KL provides notion of bound $B: KL[Q(Z|X)||P(Z||X)]$
++ E-M:
+	1. E-Step: $\arg \max_\Phi B(\Theta,\Phi)$ [variational infernece]
+	2. M-step: $\arg \max_\Theta B(\Theta, |\Phi)$ [approximate learning]
+
++ when no gap, then EM, otherwise variational inference
++ coordinate ascend on bound
+
+#### Amortized Inference
+
++ Encoder: $q_\phi(z|x|)$
++ decoder: $z\sim p_\theta (z)$
++ parameters $\phi$ are shared across all data points
+
+### Relations between graphical models and deep learning
+
++ Start with some interest in an object $P(Y|X)$
+	- could be as complicated as we want
+	- say a deep neural network
+		* just a glorified conditional distribution in a graphical model
+
+#### Deepify Operator
+
++ Sam Roweis: "Much better to invent an operator, than a new model. Model: 1 paper, Operator: long string of operators"
++ "Deepify operator" - pick a graphical model with conditional distributions and replace those with a deep neural network
++ Logits: deep NN
++ Deep survival analysis: replace Cox's proportional hazard function with a deep network
+
+#### Deep Genrative Model: The Variational Auto-Encoder
+
++ Hemholtz machine (80s)
++ read old Geoffrey Hinton's papers and reinvent them
++ we can now reintroduce his ideas 
++ deterministic NN node -> unobserved stochastic node -> observed stochastic node
+
+
+#### Wake-Sleep Algorithm
+
++ Stochastic variational Bayesian inference
++ 
+
+<br><br>
+
+<br><br>
+
+
+<br><br>
+
+<br><br>
+
+<br><br>
+
+<br><br>
+
+
+<br><br>
+
+<br><br>
+
+
+<br><br>
+
+<br><br>
+
+<br><br>
+
+<br><br>
+
+
+<br><br>
+
+<br><br>
+
+
+<br><br>
+
+<br><br>
+
+<br><br>
+
+<br><br>
+
+
+<br><br>
+
+<br><br>
+
+
+<br><br>
+
+<br><br>
