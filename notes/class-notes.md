@@ -590,29 +590,29 @@ Why care about Bayesian learning
 		- every lossless compression algorithm, is implicitly/explicitly representing a probabilistic model/approximation
 	6. automatic modeling, discovery, and experiment design
 
+### Automating Machine Learning
 
++ probabilistic programmign - automating inference
++ automatic statistician - automating model discovery and evaluation
++ automatic optimization - Bayesian optimization, optimizing hyperparameters
 
+#### Probabilistic Programming 
 
-
-<br><br>
-
-<br><br>
-
-
-<br><br>
-
-<br><br>
-
-<br><br>
-
-<br><br>
-
-<br><br>
-
-
-<br><br>
-
-<br><br>
++ **Problem** - probabilistic model development and derivation of inference algorithms is time-consuming and error-prone
++ **Solution**:
+	1. develop **probabilistic programming languages** 
+		- expressing probabilistic models as computer programs that generate data (_simulators_)
+		- should be able to express and computable probability distribution in a Turing complete system
+	2. derive **universal inference engines for these languages** 
+		- do inference over program traces given observed data (_Bayes rule on computer programs_)
+		- think of computer vision as inverse graphics
+		- speech: analysis by synthesis
+			* understanding the mapping from vocal tract - soundwave, analyze by going backwards
++ probabilisitc programming languages implementations:
+	- church, anglican, turing: completely expressive language, Turing complete
+		* inference could be computationally intractable
+	- infer.net, BUGS, stan - slightly more limited, but much more efficient inference
+	
 
 
 <br><br>
