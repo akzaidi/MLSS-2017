@@ -613,6 +613,110 @@ Why care about Bayesian learning
 		* inference could be computationally intractable
 	- infer.net, BUGS, stan - slightly more limited, but much more efficient inference
 	
+## Jure Leskovec - Network Analysis
+
+### Problem 1 - Computing with Network Data
+
++ Networks provide a common language for a variety of problems
+	- social networks
+	- proteins
+	- film - actor connections
++ how do you define a network
+	- what are the ndoes
+	- what are the edges
++ choice of the proper network representation of a given domain/problem determines ouro ability to use networks succesfully
+	- in some cases, there is a unique, unambiguous representation
+	- some times, it might not be unique
++ SNAP
+	- general purpose, high-performance system
+	- C++, python (BSD, open source)
+	- snap.stanford.edu
++ ability of hardware
+	- networks fit in a RAM of a single machine
+	- a billion edges
+	- using 1TB machines
++ SNAP graph analytics workflow:
+	- Raw data -> structured data -> networks
+	- in mmeory graph containers
+	- graph table conversions
+	- secondary storage
++ Resources:
+	- [github source](https://github.com/snap-stanford/snap)
+
+### Machine Learning in Networks
+
++ Goal: efficient task-independent feature learning for machine learnign in networks:
+	- for any node: $f:u\to\mathbb{R}^d$ mapping to a feature emebdding
+	- can we do representation learning for neworks?
++ Why is it hard?
+	- graph representations are hard
+	- images are fixed size
+		* GCN
+	- text is linear
+		* word2vec
+	- Graphs are neither
+		- node numbering is arbitrary
+			* node isomorphism problem
+		- much more complicated structure
++ Ideas
+	- linearizing the graph
+		* create a "sentence" for each node using random walks
+			- node2vec, OhmNet
+	- graph convolutional networks
+		+ propagate information between the nodes of the graph
+			- graphsage
+
+### Node2Vec - Random Walk Based (Unsupervised Feature Learning)
+
++ **Intuition** - find embedding of nodes to $d$-dimension space that preserves similarity
++ **Idea** - Learn embedding such that _nearby_ nodes are close together
++ Given a node $u$, how do we define nearby nodes?
+	- $N_S(u)$ ... neighborhood of $u$ obtained by some strategy $S$.
+
+#### Unsupservised Feature Learning
+
++ Goal: find emebdding f(u) that predicts neary nodes N_S(U)
+$$
+\max_f \sum_{u\in V}\log Pr(N_S(u)|f(u))
+$$
+
++ make indepndence assumption
+$$
+Pr(N_S(U)|f(U)) = \prod_{n_i \in N_S(U)} Pr(n_i|f(u))
+$$
+
++ Then softmax
+
+$$
+Pr(n_i|f(u)) = \frac{\exp(f(n_i) \cdot f(u))}{\sum_{v\in V}\exp(f(v)\cdot f(u))}
+$$
+
+
++ estimate $f(u)$ using SGD
+
+#### How to determine $N_S(U)$
+
++ Two classic strategies to fine a neighborhood of a given node $u$, use BFS, or DFS
++ BDFS: local microscopic view
++ DFS: Global macroscopic view
+
+#### Interpolating between BFS and DFS
+
++ Biased random walk $S$ that given a node $u$ generates a nhood $N_S(u)$
++ Biased 2nd-order random walk explore network neighborhoods
+	- BFS-like: low value of $p$
+	- DFS-like: low value of $q$
+
+#### `node2Vec` algorithm
+
+1. Compute random walk probabilities
+2. Simulate $r$ random walks of length $\ell$ starting from each node $u$
+3. Optimize the `node2vec` objective using SGD
+
+Advantages:
+	1. linear-time complexity
+	2. All 3 steps are individually parallel
+
 
 
 <br><br>
