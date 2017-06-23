@@ -717,114 +717,289 @@ Advantages:
 	1. linear-time complexity
 	2. All 3 steps are individually parallel
 
++ Other walk-based methods:
+	1. LINE
+	2. DeepWalk
+	3. Structural Deep Network Embedding
+
+### Hierarchical Networks
+
+#### Multilayer Networks
+
++ Each network is a layer $G_i=(V_i,E_i)$.
++ Simliarities between layers are given in hierarchy $\mathcal{M}$, map $\pi$ encodes parent-child relationships
++ **The Approach**: computational framework 
++ Features in a multi-layer network
+	- given layers ${G_i}$, hierarchy $\mathcal{M}$
+		layers are in leaves of $M$
+	+ Goal: learn functions $f_i: V_i \to \mathbb{R^d}$
++ Per-layer objectiev: node2vec
+	- intutition, for each layer find a feature represntation for predicting nearby nodes
+
+### GraphSage: Supervised Feature Learning
+
++ Want to scale to large networks
+	- generaliaze to new nodes
++ Inductive feature learning on networks
++ Inductive node embedding -> generalize to entirely unseen graphs
++ What makes this hard?	
+	- Generalizing to unseen subgraphs requires "aligning" the new subgraph to data we've seen before	
+		* closely related to subgraph isomorphism problem
++ Graph convolutional netwo	rks
+	- generalize convolutions beyone simple lattices
+	- leverage node features/attributes (e.g., text, degrees)
++ ICML 2016: Ahmed & Kutzkov - learning convolutional neural neworks for graphs
+	- take a node, find a neighborhood, normalize to find canonical nhood, receptive field operation to obtain input for CNN
++ GCN's + Aggregation: Kipf et. al (2017) 
+	- semi-supervised learnign on graphs
+
+$$
+f(X,A) = \text{softmax}(\hat A \text{ReLU} (\hat A XW^{(0)})W^{(1)})=\max (0,x)
+$$
+
+## Zoubin - Day Two
+
+### Bayesian Optimization
+
++ optimizing a black-box function is expensive to evaluate
+
+$$
+x^\star = \arg \max_x f(x)
+$$
+
++ treat the problem as a sequential decision-making and model uncertainy in the function
+	- uncertainty - don't know the values of the function at parameter values you haven't seen yet
+
++ Black-box optimization in a nutshell:
+	1. initial sample
+	2. initalize our model
+	3. get the acquisition function $\alpha(x)$
+		- criterion
+		- needs a rep of uncertainty
+		- could be thought of as multi-armed bandits
+	4. optimize it!: $x_{next} = \arg \max \alpha(x)$
+	5. sample new data, update model
+	6. repeat!
+	7. make recommendation
 
++ examining current function values, what's the promising places to evaluate next
+	- what's the probability of getting an improvement in a new location?
+	- another criterion: expected improvement
+	- alternatively: information gain
++ the correct way of solving thsi as any sequential decision problem
+	- if we know the horizon, work backwards from the end and solve the multistep decision problem (not using greedy decisions)
+	- computationally intractable
++ A good framework for thinking about any optimization problem. Especially useful :	
+	1. evaluating function is expensive
+	2. evaluating derivatives is hard/impossible
+	3. there is noise in the function evaluations
+	4. possible noisy constraints
+	5. prior information about the function	
+		- valentin del avart (PhD thesis)- probabilistic programs as models of the function to optimize to optomize computer systems
+	6. one needs to optimize many similar functions
+ 
+### Automatic Statistician - Automating model discovery
 
-<br><br>
++ Can we automate model discovery from data?
+	- more ambitiously - autoamte the entire pipelien: data processing, model search, evaluation, and explanation
++ need a language of models that are expressive enough about the description of 	models
+	- general enough to explore rich models
+	- expressive enough to capture real-world phenomena
 
-<br><br>
 
-<br><br>
+## Gassian processes
 
-<br><br>
++ For any subset of points the marginal distribution over that subset is multivariate Gassian 
++ Can be thought of Bayesian linear regression in the Kernel feature space
++ Radford Neal one layer with infinite units lead to GPs
+Neural network kernel function 
 
-<br><br>
+## Jure Leskovec - Network Analysis Part II
 
-<br><br>
+### Community Detection
 
++ Given a network, can we detect community membership of nodes
++ Goal: find sets of nodes that are densely connected with each other
++ Define an objective function $\phi(s)% that creates "good" clusters $S$.
+- Conductance:
 
-<br><br>
+$$
+\phi(S) = \frac{\#\text{edges cut}}{\text{vol}(S)}
+$$
 
-<br><br>
+wheres $\text{vol}(S)=\text{(number of edge end points in S)}$
 
-<br><br>
++ Existimg methods assume that edge probability _decreases_ with the umber of shared communities
 
-<br><br>
+#### Comunity-Affiliation Graph
 
++ Generative Model: How is a network generated from community affiliation
+	- later we detect comunities by fitting them to the generative model
+	- Union of Erdos-Renyi graphs
++ Model parameters $B(V,C,M,{p_c})$:
+	- nodes $V$, communities $C$, memberships $M$
++ Likelihood of graph given network:
 
-<br><br>
+$$
+\arg \max_B P(G;B) = \prod_{((i,j)\in E)} P(i,j) \prod_{(i,j)\ni E} (1-P(i.j))
+$$
 
-<br><br>
+where $P(i,j) = 1 - \prod_{c\in M_i\cap M_j}(1-p_c)$
 
+#### Relaxing AGM
 
-<br><br>
++ Relax the AGM: memberships have strengths
++ Let $F_{uA}$: the membership strength of node $u$ to community $A$.
 
-<br><br>
+#### BigCLAM Model
 
-<br><br>
++ Probability of nodes linking is proportional the strengths of shared memberships:
 
-<br><br>
+$$
+P(u,v) = 1- \exp(-F_u \cdot F_v^\top)
+$$
 
++ highly nonconvex
+	- could use gradient based optimization techniques for local optimation
++ Now given a network, we estimate F using log-likelihood:
 
-<br><br>
+$$
+\ell(F) = \sum_{(u,v)\in E}  \log( 1- \exp(-F_u \cdot F_v^\top)) - \sum_{(u,v)\ni E}F_uF_v^\top
+$$
 
-<br><br>
++ Non-negative matrix factorization
+	- Update $F_{uC}$ for node $u$ while fixing the memberships of all other nodes
+	- Updating takes linear time in the degrees of $u$
++ 
 
 
-<br><br>
 
-<br><br>
 
-<br><br>
 
-<br><br>
 
 
-<br><br>
 
-<br><br>
 
 
-<br><br>
 
-<br><br>
 
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
 
+&nbsp;
 
-<br><br>
+&nbsp;
 
-<br><br>
 
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
 
-<br><br>
+&nbsp;
 
-<br><br>
+&nbsp;
 
-<br><br>
 
-<br><br>
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
 
+&nbsp;
 
-<br><br>
+&nbsp;
 
-<br><br>
 
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
 
-<br><br>
+&nbsp;
 
-<br><br>
+&nbsp;
 
-<br><br>
 
-<br><br>
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
 
 
-<br><br>
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
 
-<br><br>
+&nbsp;
 
+&nbsp;
 
-<br><br>
 
-<br><br>
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
 
-<br><br>
 
-<br><br>
 
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
 
-<br><br>
+&nbsp;
 
-<br><br>
+&nbsp;
 
 
-<br><br>
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+
+
+
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
