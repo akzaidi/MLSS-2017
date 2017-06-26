@@ -1199,3 +1199,47 @@ See photo.
 
 1. Smoothing: add a noise to both $P_X$ and $P_G$ before comparing.
 2. Use other divergences, including IPMs and the optimal transport.
+
+### Maximizing MMD between $P_X$ and $P_G$
+
++ Take any reproducing kernel $k: \mathcal{X} \times \mathcal{X} \to \mathbb{R}$. Let $\mathcal{B}_k$ be the unit ball of the corresponding RKHS $\mathcal{H}_k$.
++ MMD is the following IPM:
+
+$$
+\gamma_k (P_X, P_G) := \sup_{t\in \mathcal{B}_k} [\mathbb{E}_{P_X}[T(X)] - \mathbb{E}_{P_G}[T(Y)]]
+$$
+
++ this optimization problem has a closed-form analytical solution
+
++ One can play the adversarial game using (MMD) instead of $D_f(P_X\Vert P_G)$:
+
++ No need to train the discriminator $T$
++ On the other hand, the $\mathcal{B}_k$ is a rather restricted class
++ One can also train $k$ adversarially, resulting ina  stronger objective
+
+$$
+\inf_{P_G}\max_k\gamma(P_X,P_G)
+$$
+
+### Minimzing the 1-Wasserstein Distance
+
++ The 1-Wasserstein distance is defined by 
+
+$$
+W_1(P,Q) := \inf_{\Gamma \in \mathcal{P}(X\sim P, Y\sim Q)} \mathbb{E}_{(X,Y)\sim \Gamma}[d(X,Y)],
+$$
+
+where $\mathcal{P}(X\sim P, Y\sim Q)$ is a set of all joint distributions $(X,Y)$ with marginals $P$ and $Q$ respectively and $(\mathcal{X}, d)$ is a metric space.
+
+**Kantorovich-Rubinstein duality**
+
+$$
+W_1(P,Q) = \sup_{t\in \mathcal{F}_L}[\mathbb{E}_{P_X}[T(X)] - \mathbb{E}_{P_G}[T(Y)]]
+$$
+
+where $\mathcal{F}_L$ are all the bounded 1-Lipschitz functions on $(\mathcal{X},d)$
+
+WGAN: In order to solve $\inf_{P_G} W_1(P_X,P_G)$ let's play the adverarial training card on (KR). Paramterize $T=T_\omega$ using the weight clipping or use gradient penalization. 
+
+Unfortunatley, (KR) holds only for the 1-Wasserstein distance.
+
