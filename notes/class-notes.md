@@ -1243,3 +1243,36 @@ WGAN: In order to solve $\inf_{P_G} W_1(P_X,P_G)$ let's play the adverarial trai
 
 Unfortunatley, (KR) holds only for the 1-Wasserstein distance.
 
+### VAE: Maximizing the marginal log-likelihood
+
+$$
+\inf_{P_G}KL(P_X\Vert P_G) \iff \inf_{P_G} -\mathbb{E}_{P_X}[\log_{p_G}(X)]
+$$ 
+
+Variational upper bound:
+
+$$
+-\mathbb{E}_{P_X} [\log_{p_G}(X)] = \mathbb{E}_{P_X}[KL(Q(Z|X),P_Z) - \mathbb{E}_{Q(Z|X)}[\log_{p_G}(X|Z)] - \mathbb{E}_{p_X}[KL(Q(Z|X),P_G(Z|X))]]
+$$
+
+$$
+\le \mathbb{E}_{P_X}[KL(Q(Z|X),P_Z) - \mathbb{E}_{Q(Z|X)}[\log_{p_G}(X|Z)]]
+$$
+
+VAEs use the upper abound and 
+
++ Latent variable models with any $P_G$, e..g, $\mathcal{N}(X;G(Z), \sigma^2 \cdot I)$
++ Set $P_Z(Z) = \mathcal{N(Z;0,I)}$ and $Q(Z|X) = \mathcal{N}(Z;\mu(X),\Sigma(X))$
++ Parameterize $G=G_\theta,\mu,\text{ and } \Sigma$ with deep nets. Run SGD.
+
+#### Adversarial Variational Bayes
+
++ Reduce the variational gap by 
+	- allowing for flexible encoders $Q_c(Z|X)$ defined implicity by random variables $e(X,\epsilon)$, where $\epsilon\sim P_\epsilon$.
+	- replacing the KL divergence in teh objective by the adversarial approximation (any o fhte ones discussed above)
+	- Paramterize $e$ wiht a deep net and run SGD.
+
+**Downsides** of VAE and AVB:
+
+- Literature reports blurry samples. This is caused by combination of KL objective and Gaussian decoder
+- Importantly, $P_G(X|Z)$ is trained only for encoded training points, however we are sampling from $Z\sim P_Z$
