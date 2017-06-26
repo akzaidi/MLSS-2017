@@ -1089,6 +1089,9 @@ $$
 
 ### Reference
 + [From optimal transport to generative modeling: the VEGAN cookbook](https://arxiv.org/abs/1705.07642)
++ [MMD GAN: Towards Deeper Understanding of
+Moment Matching Network](https://arxiv.org/pdf/1705.08584.pdf)
++ [Stabilizing Training of GANs through Regularization](https://arxiv.org/abs/1705.09367)
 
 + For an unknown distribution $P_{\mathcal{X}}$ over the data space $\mathcal{X}$.
 + Find a model distribution $P_G$ over $\mathcal{X}$ similar to $P_{\mathcal{X}}$
