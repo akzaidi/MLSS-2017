@@ -841,7 +841,7 @@ wheres $\text{vol}(S)=\text{(number of edge end points in S)}$
 + Likelihood of graph given network:
 
 $$
-\arg \max_B P(G;B) = \prod_{((i,j)\in E)} P(i,j) \prod_{(i,j)\ni E} (1-P(i.j))
+\arg \max_B P(G;B) = \prod_{((i,j)\in E)} P(i,j) \prod_{(i,j)\notin E} (1-P(i.j))
 $$
 
 where $P(i,j) = 1 - \prod_{c\in M_i\cap M_j}(1-p_c)$
@@ -864,142 +864,338 @@ $$
 + Now given a network, we estimate F using log-likelihood:
 
 $$
-\ell(F) = \sum_{(u,v)\in E}  \log( 1- \exp(-F_u \cdot F_v^\top)) - \sum_{(u,v)\ni E}F_uF_v^\top
+\ell(F) = \sum_{(u,v)\in E}  \log( 1- \exp(-F_u \cdot F_v^\top)) - \sum_{(u,v)\notin E}F_uF_v^\top
 $$
 
 + Non-negative matrix factorization
 	- Update $F_{uC}$ for node $u$ while fixing the memberships of all other nodes
 	- Updating takes linear time in the degrees of $u$
-+ 
++ Apply block-coordinate gradient ascet:
+
+$$
+\nabla\ell(F_u) = \sum_{u\in \mathcal{N}(u)} F_v \frac{\exp(-F_u F_v^\top)}{1-\exp(-F_u F_v^\top)} - \sum_{v\notin \mathcal{u}}F_v
+$$
+
++ Pure gradient ascent is slow, however, simple caching can make things feasible
+
+## Jan Peters - Reinforcement Learning in 90 Minutes
+
+### Optimal Decision Making in Robotics
+
++ Typically **supervised learning is not enough**
++ ML systems need **self-improvement**
++ Data -> approximation (model) -> Value Function -> Policy -> Data
+	- optimal control with learned models
++ Value function methods: 
+	- Data -> value function -> policy -> data
++ Policy Search:
+	- Data -> approximating policy -> Data
+
+### Dynamic Programming
+
++ Principle of optimality:
+	- optimal sequence of controls in a multistage optimization problem has the property that whatever the initial stage, state and controls are, teh remaining controls must constitute an optimal sequence of decisions for the remainign problem with stage and state resulting from previous controsl consdiered as initial codnitions
+	- break down your problem into subproblems
 
 
+### Markov Decision Process
+
++ A stationary **MDP**  is defined by:
+	- its state space $s\in\mathcal{S}$
+	- its action space $a\in\mathcal{A}$
+	- its transition dynamics $\mathcal{P}(s_{t+1}|s_t,a_t)$
+	- its reward function $r(s,a)$
+	- and its initial state probabilities $\mu_0(s)$
+
+- Markov property:
+
+$$
+P(s_{t+1}|s_t,a_t,a_{t-1},\ldots) = P(s_{t_+1}|s_t,a_t)
+$$
+
+### Reinforcement Learning Loop
+
++ Goal maximize the expected long-term reward
+
+$$
+J_\theta = \mathbb{E}_{\mu_0,\mathcal{P},\pi}\left[\sum_{t=1}^{T-1}\gamma^tr(s_t,a_t)\right] 
+$$
+
+### Algorithmic Description of Value Iteration
+
++ Intialize some 
+- Repeat until $t-1$
+	- compute Q-function for time set $t$ for each state action pair
+$$
+Q_t ^\star = r_t(s,a) + \gamma\sum_{s^\prime}P_t(s^\prime|s,a)V_{t+1}^\star(s^\prime)
+$$
+
+Bellman Equation: converges to fixed point value, telling you value of each state (the stationary value function)
+
+### Special Case of MDP: LQR
+
+(Bellman through out this student for not coming with this first)
+
++ Search: if we know where we want to start, we can explore solutions locally
++ Consider your system as a function, and then use a Taylor approximation to approximat the learned forward dynamics by linearzing at the point $(\tilde{x_t},\tilde{u_t})$.
+
+### Value functions of a policy
+
++ Value function and state-actionv alue function of a policy cna be computed iteratively
+
+### Approximating Value Functions Directly
+
+#### Greedy vs Incremental
+
++ **Greedy Updaetes** 
+
+$$ 
+\theta_{\pi^\prime} = \arg \max_\tilde{\theta} E_{\pi_\tilde{\theta}}{Q^\pi (x,u)}
+$$
+
+Policy Gradient Upates:
+
+## Jure Leskovec - Networks III
+
+### Networks and Optimization
+
++ Large optimization problems can often be represented as networks
++ Nodes - series of subproblems
++ Edges - relationships that define coupling beween different subproblems
+
+**Example - House Price Modeling**
+
++ Consider house price models:
+
+$$
+p_i = x_{i1}\cdot \text{SQFT} + x_{i2}\cdot \text{num bedrooms} + x_{i3}\cdot \text{num bathrooms}
+$$
+
++ Rather than allowing $i$ to be underspecified for each house, we will group it into clusters of homes
++ Calculate edges using network LASSO
++ Given undirected graph $\mathcal{G} = (\mathcal{V},\mathcal{E})$ with $m$ nodes and $n$ edges. Solve for a set of variables, $x_i\in \mathbb{R}^n$:
+
+$$
+\text{minimize  } \sum_{i\in\mathcal{V}} f_i(x_i) + \lambda \sum_{(j,k)\in \mathcal{E}} w_{jk}\Vert x_j-x_k\Vert _2
+$$
+
++ Not Laplacian regularization
+	- incentivizes edge difference to be sparse
++ Think of this as a simultaneous clustering and optimization
++ varying $\lambda$ can yield insight into the network structure
++ at $\lambda=0$  the edges have no effect
++ For $\lambda>\lambda_{\text{critical}}$ it turns into a consensus problem
+
+**Solution** - ADMM
+
++ For large graphs, standard solvers won't scale well
++ Alternating direction method of multipliers splits the problem into subproblems
+	- Assuming $f$ is convex
+	- Can be parallelized
+
+### How Do You Infer Networks?
+
++ From Time-Series to Networks
+	- how do we encode structure and dependencies in temporal data?
+
++ Given time-series data, learn a dependency-network
+	- estimate inverse covariance matrix $\Theta$
+	- if $\Theta_{ij}=0$ then $x_i$ is conditionally independent of $x_j$
++ Learning a Markov random field of dynamic time series data
+
+#### Time-Varying Graphical Lasso
+
++ Given multivariate time series data, infer a sequence of networks (i.e., a sequence of inverse covariance matrices)
+
+$$
+\text{minimize  } \sum_{i=1}^{T} -\ell_i(\Theta_i) + \lambda \Vert \Theta_i \Vert_\text{od,1} + \beta \sum^T_{i=2}\psi...
+$$
 
 
+## Theory Practical - Ruth & Ilya
+
++ Consider feature space $X$ and label space $Y$.
++ Looking for a predictor $h:X\to Y$
++ A **learner** is a mapping from sample space to feature space, i.e.,
+$$
+S\mapsto h\in \{0,1\}
+$$
++ Sample $S=((X_1,Y_1),\ldots,(X_n,Y_n))$
++ Goal: correctly classify new samples $X_{n+1} \to \hat{Y}_{n+1}$, i.e., have smallest **expected loss**
+	- assuming binary loss function $\ell(h,X,y) = \mathbb{1}[h(X)\ne Y]$,
+i.e., 
+$$
+\text{minimize } \mathbb{E}_{(X,Y) \sim \mathcal{D}}\mathbb{1}[h(X)\ne Y]
+$$
++ Could use empirical loss as our estimate
+
+$$
+L_n(h) = \frac{1}{n}\sum^N_{i=1}\mathbb{1}[h(X_i)\ne Y_i]
+$$
+
++ We may use the ERM, i.e., the learner that minimizes expected loss
+
+$$
+S\mapsto \hat{h}_n:= \arg \min L_n(h)
+$$
+
+#### Quiz 1
+
+1. Show that $\mathbb{E}_SL_n(h) = L(h)$ for any function $h:\mathcal{X} \to \{0,1\}$ and any sample size $n$;
+
+_Proof_:
+
+$$
+\mathbb{E}_SL_n(h) = \mathbb{E}_S\frac{1}{n}\sum^N_{i=1}\mathbb{1}[h(X_i)\ne Y_i]
+$$
+
+Since expectations are linear, take the expectation inside,
+
+$$
+\mathbb{E}_SL_n(h) = \frac{1}{n} \sum^N_{i=1} \mathbb{E}_S\mathbb{1}[h(X_i) \ne Y_i]
+$$
+
+and now, observing the expectation of the indicator is just the probability of that sample:
+
+$$
+\mathbb{E}_SL_n(h) = \frac{1}{n}\sum^N_{i=1} L(h)
+$$
+
+so 
+
+$$
+\mathbb{E}_SL_n(h) = L(h)
+$$
+
+## Suvrit Sra - Optimization for Machine learning
+
++ The problem:
+
+$$
+\min_{\theta\in \mathcal{S}} f(\theta)
+$$
+
+### Convex Sets
+
+**Definition** A set $\mathcal{C}\in \mathbb{R}^n$ is called **convex** if for any $x,y\in \mathcal{C}$, the line-segement $\lambda x + (1-\lambda)y$, where $\lambda\in [0,1]$, also lies in $\mathcal{C}$.
+
+#### Combination of points
+
+* Convex: $\lambda_1 x_1 + \lambda_2 x_2 \in \mathcal{C}$, where $\lambda_1 + \lambda_2 = 1$ and $\lambda_1, \lambda_2 \ge 0$
+* Linear: if restrictions on $\lambda_1$, $\lambda_2$ are dropped
+* Conic: If restriction $\lambda_1 + \lambda_2 = 1$.
+
+## Ilya Tolstikhin - Implicit generative models: dual vs primal approaches
+
++ For an unknown distribution $P_{\mathcal{X}}$ over the data space $\mathcal{X}$.
++ Find a model distribution $P_G$ over $\mathcal{X}$ similar to $P_{\mathcal{X}}$
+
++ We will wirk with latent variable models $P_G$ defined by two-steps:
+
+1. Sample a code $Z$ from teh latent space $\mathcal{Z}$
+2. Map Z to $G(Z)\in \mathcal{X}$ with a random transformation $G:\mathcal{Z} \mapsto \mathcal{X}$
+
+$$
+p_G(x) := \int_{\mathcal{Z}} p_G(x|z)p_z(z)dx
+$$
+
++ While $P_G$ has no analytical expression, it is easy to sample from
++ The objective allows for SGD training
+
+### Similarity measures
+
+How do we measure simliarity between $P_X$ and $P_G$?
+
++ **f-divergences**: for any convex $f: (0,\infty) \to \mathbb{R}$ with $f(1)=0$
+
+$$
+D_f(P||Q) := \int_{\mathcal{X}} f \left( \frac{p(x)}{q(x)} q(x)dx \right )
+$$
+
++ Example: KL-Divergence
+
+$$
+\inf_{P_G} KL(P_X,P_G) = \inf_{P_G} \int p_X(x) \log \frac{p_X(x)}{p_G(x)}dx
+$$
+
+$$
+= -H(P_X) + \inf_{P_G} - \int p_X(x) \log(p_G(x)dx)
+$$
+
+$$
+= \sup_{P_G} H(P_G) + \int \log p_X(x)p_G(x)dx
+$$
 
 
++ **integral probability measures**
+
+Take any class $\mathcal{F}$ of bounded real-valued function on $\mathcal{X}.
+
+$$
+\gamma_{\mathcal{F}}(P,Q) := \sup_{f\in\mathcal{F}} | \mathbb{E}_P [f(X)] - \mathbb{E}_Q [f(Y)]|
+$$
 
 
++ **optimal transport**
+
+Take any cost function $c(x,y): \mathcal{X} \times \mathcal{X} \to \mathbb{R}_+.$
+
+$$
+W_c(P,Q) := \inf_{\Gamma \in \mathcal{P}(X \sim P, Y \sim Q)} \mathbb{E}_{(X,Y) \sim \Gamma} [c(X,Y)],
+$$
+
+where $\mathcal{P}(X \sim P, Y \sim Q)$ is a set of all joint distribution of $(X,Y)$ with marginals $P$ and $Q$ respectively.
++ $\Gamma$ is a _coupling_
+
+### The goal: minimize $D_f(P_X \Vert P_G)$ with respect to $P_G$
+
+Variational (dual) representation of $f$-divergences:
+
+$$
+D_f(P\Vert Q) = \sup_{T:\mathcal{X} \to \text{dom}(f^{\star})}\mathbb{E}_{X\sim P}[T(X)] - \mathbb{E}_{Y\sim Q}[f^{\star}(T(Y))] 
+$$
+
+where $f^{\star} := \sup_u x\cdot u -f(u)$ is the convex conjugate of $f$.
+
+Solving $\inf_{P_G}D_f(P_X\Vert P_G)$ is equivalent to 
+
+$$
+\inf_G \sup_T \mathbb{E}_{X\sim P_X}[T(X)] - \mathbb{E}_{Z\sim P_Z|}[f^{\star}(T(G(Z)))]
+$$ 
+
+1. Estimate expections with samples:
+
+$$
+\approx \inf_G \sup_T \frac{1}{N} \sum^N_{i=1} T(X_i) - \frac{1}{M} \sum^M _{j=1}f^{\star}(T(G(Z_j)))
+$$
+
+* $T$ is the discimrinator
+* $G$ is the generator
+
+2. Parametrize $T=T_{\omega}$ and $G=G_\theta$ using any flexible functions (i.e., deep nets) and run SGD on dual mini-max game (*).
+
+### Original GAM Formulation
+
+The previous formulation is indeed identical to the original Goodfellow formulation.
+
+See photo.
 
 
+### Theory vs Practice: Do we Know What GANs Do?
 
++ GANS are not precisely solving $\inf_{P_G}JS(P_X\Vert P_G)$ because: 
 
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
+	1. GANs replace expectatiosn with sample averages. Uniform laws of large numbers may not apply, as our function classes are huge
+	2. Instead of taking supremum over all possible witness functions $T$ GANS optimize over classes DNNs
+	3. In practice never optimize $T_\omega$ to the end because of various computaional/numerical reasons
 
-&nbsp;
+### Critiques of Optimizing $f$-divergences
 
-&nbsp;
++ When $P_X$ and $P_G$ are supported on disjoint manifold, $f$-divergences often max out.
++ This leads to nuermical instabilities: no useful gradients for $G$.
++ Consider $P_{G^\prime}$ $P_{G^{\prime \prime}}$ supported on Manifolds $M^{\prime}$ and $M^{\prime \prime}$. Suppose $d(M^\prime, M_X) < d(M^{\prime \prime}, M_X)$ where $M_X$ is the true manifold. $f$-divergences will often give the same numbers.
 
+#### Possible Solutions
 
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-
-
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-
-
-
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-
-
-
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
+1. Smoothing: add a noise to both $P_X$ and $P_G$ before comparing.
+2. Use other divergences, including IPMs and the optimal transport.
