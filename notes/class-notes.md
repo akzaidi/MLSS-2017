@@ -1087,6 +1087,9 @@ $$
 
 ## Ilya Tolstikhin - Implicit generative models: dual vs primal approaches
 
+### Reference
++ [From optimal transport to generative modeling: the VEGAN cookbook](https://arxiv.org/abs/1705.07642)
+
 + For an unknown distribution $P_{\mathcal{X}}$ over the data space $\mathcal{X}$.
 + Find a model distribution $P_G$ over $\mathcal{X}$ similar to $P_{\mathcal{X}}$
 
@@ -1246,7 +1249,7 @@ Unfortunatley, (KR) holds only for the 1-Wasserstein distance.
 ### VAE: Maximizing the marginal log-likelihood
 
 $$
-\inf_{P_G}KL(P_X\Vert P_G) \iff \inf_{P_G} -\mathbb{E}_{P_X}[\log_{p_G}(X)]
+\inf_{P_G}KL(P_X\Vert P_G) \text{ if and only if } \inf_{P_G} -\mathbb{E}_{P_X}[\log_{p_G}(X)]
 $$ 
 
 Variational upper bound:
