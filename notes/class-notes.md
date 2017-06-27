@@ -820,7 +820,7 @@ Neural network kernel function
 
 + Given a network, can we detect community membership of nodes
 + Goal: find sets of nodes that are densely connected with each other
-+ Define an objective function $\phi(s)% that creates "good" clusters $S$.
++ Define an objective function $\phi(s)$ that creates "good" clusters $S$.
 - Conductance:
 
 $$
@@ -950,7 +950,7 @@ Bellman Equation: converges to fixed point value, telling you value of each stat
 + **Greedy Updaetes** 
 
 $$ 
-\theta_{\pi^\prime} = \arg \max_\tilde{\theta} E_{\pi_\tilde{\theta}}{Q^\pi (x,u)}
+\theta_{\pi^{\prime}}=\arg\max_{\tilde{\theta}}E_{\pi_{\tilde{\theta}}}{Q^{\pi}(x,u)}
 $$
 
 Policy Gradient Upates:
@@ -1087,11 +1087,13 @@ $$
 
 ## Ilya Tolstikhin - Implicit generative models: dual vs primal approaches
 
-### Reference
+### References
 + [From optimal transport to generative modeling: the VEGAN cookbook](https://arxiv.org/abs/1705.07642)
 + [MMD GAN: Towards Deeper Understanding of
 Moment Matching Network](https://arxiv.org/pdf/1705.08584.pdf)
 + [Stabilizing Training of GANs through Regularization](https://arxiv.org/abs/1705.09367)
+
+### Implicit Generative Models
 
 + For an unknown distribution $P_{\mathcal{X}}$ over the data space $\mathcal{X}$.
 + Find a model distribution $P_G$ over $\mathcal{X}$ similar to $P_{\mathcal{X}}$
@@ -1282,3 +1284,59 @@ VAEs use the upper abound and
 
 - Literature reports blurry samples. This is caused by combination of KL objective and Gaussian decoder
 - Importantly, $P_G(X|Z)$ is trained only for encoded training points, however we are sampling from $Z\sim P_Z$
+
+## Suvrit Sra - Optimization II
+
+### Descent Methods
+
++ Goal is $\min_x f(x)$, searching for $\nabla_x f(x^\star) = 0$
++ Choosing step size $\delta$, next position is chosen using the gradient: $x-\delta \nabla f(x)$
++ This strategy provably works if your cost function is convex
+
+
+### Batch Gradient Methods
+
++ $x^{k+1} = x^k + \alpha_k d^k, k = 0,1,\ldots$
++ Stepsize $\alpha_k$
+
+Choosing step-size
+
++ **Exact**: $\alpha_k := \arg \min_{\alpha\ge 0} f(x^k + \alpha d^k)$
++ **Limited min**
++ **Armijo-rule**
++ **Constant**
++ **Diminishing**: $\alpha_k \to 0$ but $\sum_k \alpha_k =\infty$
+
+#### Converegence of Gradient Methods
+
++ **Lipschitz Assumption**: Gradient fluctuations are bounded:
+
+$$
+\Vert \nabla f(x) - \nabla f(y) \Vert_2 \le L\Vert x - y \Vert_2
+$$
+
+
+**Lemma** (Quantifies upper bound for Lipschitz gradients) Let $f\in C^1 _L$, then:
+
+$$
+f(y)\le f(x) + (\nabla f(x), y - x) + \frac{1}{2} \Vert y - x\Vert_2^2
+$$
+
+**Theorem**Let $f\in C^1 _L$ be convex, then ${x^k}$ is a sequence generated as above, with $\alpha_k = 1/L$, then $f(x^{k+1})-f(x^\star) = \mathcal{O}(1/k)$
+
+**Remark** Properties still hold for non-convex, except we can't rigorously quantify proximity to $f^\star$.
+
+### Strong Convexy (Faster Convergence)
+
++ **Assumption**, denote strong convexy as $f\in S^1_{L2,\mu}$
+
+$$
+f(x) \ge f(y) + \langle\nabla f(y), x- y\rangle + \frac{\mu}{2}\Vert x-y \Vert^2_2
+$$
+
++ 
+
+## SNA - Practical
+
+## Suvrit Sra - Optimization III
+
