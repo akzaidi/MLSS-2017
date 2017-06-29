@@ -1,2 +1,8 @@
 ## don't include personal info
 etc/
+poster/
+notes/svgs/
+
+notes/mlss-notes.md
+
+*.html

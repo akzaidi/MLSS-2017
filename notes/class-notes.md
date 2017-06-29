@@ -1137,10 +1137,10 @@ $$
 
 + **integral probability measures**
 
-Take any class $\mathcal{F}$ of bounded real-valued function on $\mathcal{X}.
+Take any class $\mathcal{F}$ of bounded real-valued function on $\mathcal{X}$.
 
 $$
-\gamma_{\mathcal{F}}(P,Q) := \sup_{f\in\mathcal{F}} | \mathbb{E}_P [f(X)] - \mathbb{E}_Q [f(Y)]|
+\gamma_{\mathcal{F}}(P,Q) := \sup_{f\in\mathcal{F}} \vert \mathbb{E}_P [f(X)] - \mathbb{E}_Q [f(Y)]\vert
 $$
 
 
@@ -1334,9 +1334,393 @@ $$
 f(x) \ge f(y) + \langle\nabla f(y), x- y\rangle + \frac{\mu}{2}\Vert x-y \Vert^2_2
 $$
 
+## Suvrit Sra - Optimization III
+
 + 
 
-## SNA - Practical
+## Stefanie Jegelka - Submodularity and Machine Learning
 
-## Suvrit Sra - Optimization III
++ [Stefanie's Page on Submodularity](http://people.csail.mit.edu/stefje/submodularity.html)
+
+### Set Functions in Machine Learning
+
++ $F:2^\mathcal{V}\to\mathbb{R}$
++ Where do set functions arise in machine learning?
+- training data: 
+	- too much data: needs compression, summarization
+	- need to select a subset from original dataset
+		* $F(S)=$  "information" 
+	- too little data: 
+		* where to place sensors
+		* designing experiments
++ Model learning:
+	* variable coordinate selection
+	* $F(S)=$ "coherence"
+	* Only want to select a few coordinates of $x$ in $f(x,w)$, where $f(x,w)=\sum^d_{i=1}w_ix_i$
++ Summarization or recommendation:
+	* $F(S)=$ relevance + diversity or coverage
++ Common formulation: find a set $S$ that maximizes/minimizes a set function $F(S)$.
+	* very difficult, $2^{100}$ possible subsets for just 100 items.
+	+ need submodularity!
+
+### Marginal Gain
+
++ Given a set function: $F:2^\mathcal{V}\to\mathbb{R}$
+* Marginal gain: $F(s|A)=F(A\cup{S})-F(A)$
++ **Diminishing gains**: as you select more items, marginal gain of new items decreases.
+
+### Submodular set functions
+
++ Diminishing gains: for all $A\subseteq B$:
+
+$$
+F(A\cup e)-F(A)\ge F(B\cup e)-F(B)
+$$
+
++ Union-intersection: for all $S,T\subseteq \mathcal{V}$:
+
+$$
+F(S) + F(T) \ge F()
+$$
+
+#### Example: Cover
+
+$F(S) = \left\vert \bigcup_{v\in S}\text{area}(v)\right\vert$
+
+#### Utility Functions
+
+$$
+F(A) = H(Y) - H(Y|X_A)
+$$
+
+This is the mutual information. Want to shrink this to zero. 
+
+For $X_1,\ldots,X_n$ discrete random variables, suppose 
+$F(S)=H(X_S)=$ joint entropy of subset $S$. What does diminishing returns mean in this scenario?
+
+### Optimization
+
++ Monotone functions
+
+$$
+\max_S F(S) \text{ such that } \vert S\vert \le k
+$$
+
+### Submodular Minimization
+
++ "Maximize coherence"
+
+#### Lovasz extension: Use expectation
+
++ $f(x)=\mathbb{E}_\theta [F(S_\theta)]$
++ sample threshold $\theta\in [0,1]$ uniformly
++ $S_\theta = \{e\vert x_e \ge \theta\}$
+
+## Olivier Bousquet - New Trends in Machine Learning (and some advice)
+
++ AutoML - ridding the heavy pieces with ML
+
+### Learning to Learn - Getting Rid of the ML Expert
+
++ Neural network architecture discover with neural networks
++ [B. Zoph & Q.V. Le - Neural architecture search with reinforcement learning](https://openreview.net/pdf?id=r1Ue8Hcxg)
++ Trying to replace the manual process of deciding architecture design and hyperparameter decisions
++ Learn the optimization update rule:
+	- neural optimizer search
+
+### Learning the Loss - Generative Models
+
++ hard to decide on a loss function
+
+### Getting Rid of Human Labeling - Learning the Labels
+
++ word2vec
++ patch prediction: Unsupservised visual representation learning: doersch et. al 
++ autoencoder
++ What's a good representation?
+	- representation := structure that captures the mechanics of the rule
+	- want faithful represenstations
+
+
+## David Lopez-Paz - Causality and PyTorch Workshop
+
++ [David's homepage with publications](https://lopezpaz.org/)
++ [David's thesis: from dependence to causation](https://arxiv.org/pdf/1607.03300.pdf)
++ [David's Github](https://github.com/lopezpaz)
+	- [distillation of privileged information](https://github.com/lopezpaz/distillation_privileged_information)
++ [Kaggle cause-effect competition](https://www.kaggle.com/c/cause-effect-pairs)
+
+
+
+## Michael Jordan - Variational, Hamiltonian and Symplectic Perspectives on Acceleration
+
++ [Papers](https://people.eecs.berkeley.edu/~jordan/publications.html)
++ SGD and layers of neural networks will not give us "intelligence"
+	* it will give us things that mimic intelligence
+	* just being empirical is not satisfying intellectually
++ Foundational understanding of optimization
+	* primarily been in discrete time
+	* we will try to go to the continuous description
+	* especially when discussing momentum
+
+### Lower Bounds
+
++ Russian school provided many bounds in optimization
+	* primarily Nemerovski, nesterov, polyak, and others
++ Many lower bounds in statistics
+	* these are actually pretty good/tight
++ Lower bounds in CS are usually pretty vaccuous
+	* even exponentially off
+
+### Fundamentals of Optimization
+
+Arbitrary convex space (not necessarily smooth). Rates of convergence $\frac{1}{\sqrt{k}}$. For smooth functions, rate of convergence is $\frac{1}{k}$. 
+
+Let's talk about Lipschitz functions, or more particularly, look at a space $\mathcal{X}\subseteq \mathcal{B}_R$, and for all $x\in\mathcal{X}, \forall g\in \partial f(x) \Rightarrow \Vert g \Vert \le L$.
+
+Subgradient steps: $x_{j+1} = x_j - \eta g_j, g_j\in \partial f(x_j)$
+
+**Theorem** 
+
+$$
+f(\frac{1}{k}\sum^k_{j=1}x_j) - f(x^\star) \le \frac{RL}{\sqrt{k}}
+$$
+
+_Proof_: 
+
+$$
+\begin{aligned}
+f(x^\star) - f(x) &\ge g_j^\top (x^\star -x_j) \\
+\Rightarrow f(x_j) - f(x^\star) &\le g_j^\top(x_j-x^\star) \\
+\end{aligned}
+$$
+
+Examining the right hand side, using the inequality, we have
+
+$$
+\begin{aligned}
+&=\frac{1}{\eta}(x_j - x_{j+1})^\top (x_j - x^\star) \\
+&=\frac{1}{2\eta} \left( \Vert x_j -x^\star \Vert ^2 + \Vert x_j -x_{j+1}\Vert ^2 - \Vert x_{j+1} - x^\star \Vert^2\right) \\
+&= \frac{1}{2\eta} \left( \Vert x_j -x^\star \Vert ^2 + \Vert x_{j+1} -x^{\star}\Vert ^2 \right ) + \frac{\eta}{2}\Vert g_j \Vert ^2 \\
+\Rightarrow \frac{1}{k}\sum^k_{j=1} f(x_j) - f(x^\star) &\le \frac{R}{2\eta k} + \frac{\eta}{2} L ^2 \\
+\Rightarrow f (\frac{1}{k} \sum^k _{j=1}x_j) - f(x^\star) &\le \frac{R^2}{2\eta k} + \frac{\eta}{2}L^2
+\end{aligned}
+$$
+
+### Faster Rates for Gradient Descent
+
+**Smoothness** Suppose $\Vert \nabla f(x) - \nabla f(y) \Vert \le \beta \Vert x - y \Vert$. Then rate of convergence is $\mathcal{O}(\frac{1}{k})$
+
+**Strong-Convexity**Then rate of convergence is $\mathcal{O}(\frac{1}{k})$
+
+**Smoothness and Strong Convexity** Rate of convergence $\mathcal{O}(\exp(-t/Q))$ where $Q=\frac{\beta}{\gamma}$.
+
+### Interplay between Differentiation and Integration
+
++ The 300 year old fields of Physics and Statistics provided cool things like Lagrange and Hamiltonian mechanics, Laplace expansions, saddlepoint expansions, etc. Both have strong interplay between integration and differentiation 
++ Can approach problems through integration, or through differentiation (dynamics of paths)
++ When you turn the problem into an optimization problem, you can perturb the problem, that could be an approximation/variation
++ In addition to numerical disciplines: finite elements (differentation: variational approach to dynamics), Monte Carlo (integration problew: flow along paths)
+
+### Variational Approach to Optimization
+
+**Setting** Unconstrained convex optimization:
+
+$$
+\min_{x\in \mathbb{R}^d} f(x)
+$$
+
++ Classical gradient descent:
+
+$$
+x_{k+1} = x_k - \beta \nabla f(x_k)
+$$
+obtains a convergence rate of $O(\frac{1}{k})$. 
+
+Accelerated Gradient descent:
+
+$$
+\begin{aligned}
+y_{k+1} &= x_k - \beta \nabla f(x_k) \\
+x_{k+1} &= (1-\lambda _k)y_{k+1}
+\end{aligned}
+$$
+
+### The Acceleration Phenomenon
+
++ Two classical algorithms:
+	- Gradient methods
+		- gradient descent, mirror descent, cubic-reularized Netwon's method (Nesterov and Polyak '06)
+
+
+### Accelerated methods: Continuous time perspectives
+
++ Gradient descent is discretization of gradient flow
+
+$$
+\dot{X_t} = -\nabla f(X_t)
+$$
+
++ (and mirror descent is discretization of natural gradient flow)
+
++ Su, Boyd, Candes '14: Continuosu time limit of accelerated gradient descent is a second order ODE:
+
+$$
+\ddot{X_t} + \frac{3}{t}\dot{X}_t + \nabla f(X_t) = 0
+$$
+
+### Bregman Lagrangian
+
+Define the **Bregman Lagrangian**
+
+$$
+\mathcal{L}(x,\dot{x},t) = e^{\gamma_t + \alpha_t} (D_h (x + e^{-\alpha_t}\dot{x},x) - e^{\beta_t}f(x))
+$$
+
+Function of position $x$, velocity $\dot{x}$, and time $t$.
+
++ $D_h(y,x) = h(y) - h(x) - \langle \nabla h(x), y - x \rangle$ is the Bergman divergence
++ $h$ is the convex distance-genearting function
++ $f$ is the convex objective function
++ $\alpha, \beta \text{ and } \gamma$ are smooth functions
+
+### Polynomial Convergence Rate
+
++ For $p>0$, choose parameters
+
+$$
+\begin{aligned}
+\alpha_t &= \log p - \log t \\
+\beta_t &= p \log t + \log C \\
+\gamma_t &= p \log t
+\end{aligned}
+$$
+
+
+## Michael J. Black - Learning digital humans by capturing real ones
+
+## Michael Jordan - Large Scale Inference
+
++ Say something about the world from data
++ Not just computing conditional probability 
++ Not just scoring
+
+### Some Current Inferential Challenges in ML
+
++ Control of inferential accuracy across many decisions
+	- trying to control error rates across many decision tasks
+	- e.g., Bonferonni, FDR
++ Inference when there is a runtime constraint
+	- need theoretical foundation for runtime constraints
+	- most current procedures are ad-hoc approaches to increase computation power or make things parallel
+	- statistical risk describes how complexity and dimensions impact risk
+	- need to expand this for runtime constraints
+	- PAC learning was supposed to address this
+		- still too broad, ad-hoc
+		- polynomial/exponential time isn't effective for our problems
+		- worse case geometric error - doesn't account for what we need
++ Inference when there is a privacy constraint
++ Inference and scalability
++ Inference and data provenance
+	- data collection and inference has long time-horizon
+	- inference based on some trial/estimation that might have been from a long time ago - data distribution, assumptions, may have changed
++ Borrowing statistical strength effectively
++ Sharing data
+
+### The Bag of Little Bootstraps
+
++ Can we build a system for parallelizing resampling procedures?
++ **Setup** Observe data $X_1, \ldots, X_n$. Form a parameter $\hat{\theta}_n = \theta(X_1,\ldots,X_n)$. 
+- Want to assess quality $\xi$ of our estimate $\hat{\theta}_n$, e.g., a confidence region.
+- Penultimate goal: estimate the bias and variance of your estimator 
+- The unachievable frequentist ideal:
+	1. Observe many independent datasets of size $n$.
+	2. Compute $\hat{\theta}_n$ on each.
+	3. Compute $\xi$ based on these multiple realization of $\hat{\theta}_n$. 
+
++ We only observe one dataset
++ Glivenko-Cantelli Theorem provides an avenue to proceed:
+	- empirical distribution is a probability measure
+	- G-C theorem: uniformly close to true distribution
++ Pretend the sample is the population
++ Plug in the empirical distribution in place of the population distribution in computing the risk
++ Proof: In a supremum norm, our edf is close to our true
+	- for continuous functionals $\xi$, we are guaranteed to have supremum close estimators to true $\xi$. 	
+		- a little more tricky for non-continuous functionals, but doable
+
+### Computational Issues with the Bootstrap
+
++ Each sample from bootstrap willh have roughly ~60% of the sample
++ So if original dataset is 1 TB, each resample will be roughly 632 GBs
++ Can't feasibly send samples to workers
++ Sub-sampling: 
+	- thin/sub-sample original sample
+	- Sample is of size $n$, sub-sample is of size $b$, perhaps of size $\sqrt{n}$. 
+	- Sub-samples will be off by factor $\sqrt{n}$. Can't use this
++ By GC: pretend the sub-sample is the population. This will also be uniformly close
++ The bag of little bootstraps:
+	- use Possion approximation to figure out sub-samples
+	- do many bootstraps
+	- average (or any sensical aggregation) over the functionals $\xi$
++ The map-reduce paradigm to bootstrap
++ Essentially inherits the favorable properties of the bootstrap
+	- error bars/confidence intervals are essential random variables (coverings)
+	- Use CLT and get the error bars
+		- error of approximation: $\frac{1}{\sqrt{n}}$. But error in confidence intervals also $\frac{1}{\sqrt{n}}$. Different constants.
+	- Bootstrap errors: $\frac{1}{n}$, so faster.
+
+### Controlling Testing Rates: FDR 2.0
+
++ XKCD: Jellybeans and acne
++ FDR:
+	1. $\text{FDR} = \mathbb{E}[\text{number of false discoveries / number of discoveries}]$
+	2. Our method to ensure FDR is at most $0.05$ is to sort (ascending) p-values, and find $k^\star = \max_k(P_{k} \le 0.05 \frac{k}{N})$, reject the hypotheses corresponding to smallest $k^\star$ p-values.
+	3. Benjamini-Hochberg procedure (non-trivial proof of FDR control, got it wrong at first).
+	4. **Fact**: BH is minimax optimal under the sparse i.i.d. Gaussian model (both type errors).
+		- see [A Unified Treatment of Multiple Testing with Prior Knowledge](https://arxiv.org/pdf/1703.06222.pdf)
+
+#### Super-Uniformity Lemma
+
+1. Every null p-value is super-uniformly distributed by definition:
+
+$$
+\mathbb{E}\left[ \frac{\textbf{1}{P_i \le t}}{t} \right] \le 1 \text{ for any fixed non-random threshold } t\in [0,1]
+$$
+
+### Optimization in the Ray Project
+
++ [Avoiding Saddlepoints, Efficiently](https://arxiv.org/pdf/1703.00887.pdf)
++ Using differential topology shows: generically, you will not hit a saddlepoint asymptotically (but not necessarily efficiently). 
+
+#### Perturbed Gradient Descent
+
++ To minimize a function $f:\mathbb{R}^d \to \mathbb{R}$, gradient descent:
+
+$$
+x_{t+1} = x_t - \eta \nabla f(x_t)
+$$
+
++ Function $f$ is $\ell$-smooth (or gradient Lipschitz) if 
+
+$$
+\forall x_1,x_2 \Vert \nabla f(x_1) - \nabla f(x_2) \Vert \le \ell \Vert x_1 - x_2 \Vert
+$$
+
++ Point $x$ is an $\epsilon$-first-order stationary point
++ Additional assumption: Hessian-lipschitz
+
+### Stochastically Controlled Stochastic Gradient Descent
+
++ [L. Lei & M. Jordan](Less than a Single Pass: Stochastically Controlled Stochastic Gradient Method)
++ Hybrid approach (motivated by Francis Bach) - variance controlled stochastic gradient (smoothed in some way)
++ Task minimizing a compositive objective:
+$$
+\min{x\in \mathbb{R}^d} f(x) = \frac{1}{n} \sum
+$$
+
++ Lipschitz gradients
++ Computational complexity
+
+
+## Stefan Schaal - Robot Learning
 
